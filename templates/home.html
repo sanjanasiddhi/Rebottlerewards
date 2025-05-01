@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: url("https://i.ibb.co/RTw6HPXM/Green-Mac-Wallpaper-1.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Add decorative leaf-like curves */
+        body::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center,
+                    transparent 50%,
+                    rgba(144, 238, 144, 0.1) 51%,
+                    transparent 52%);
+            z-index: 0;
+            animation: rotate 60s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Rest of your existing styles */
+        .header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: rgba(76, 140, 85, 0.9);
+            color: white;
+            height: 5%;
+            padding: 10px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-container img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            background-color: white;
+            color: black;
+            border: 1px solid #ddd;
+            top: 60px;
+            left: 0;
+            width: 150px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .profile-dropdown a {
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+            color: black;
+        }
+
+        .profile-dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            text-align: center;
+            margin: 0;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        .main-title {
+            color: #2c5234;
+            font-size: 4em;
+            font-family: "Bruno Ace SC", serif;
+            font-weight: 400;
+            font-style: normal;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            color: #557b5e;
+            font-size: 1.8em;
+            margin: 10px 0 30px 0;
+            font-family: "Bruno Ace SC", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .icons-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin: 20px 0;
+        }
+
+        .icon-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            width: 200px;
+            height: 200px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .icon-container::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: #4caf50;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .icon-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .icon-container:hover::before {
+            transform: scaleX(1);
+        }
+
+        .icon {
+            font-size: 60px;
+            color: #3c6e44;
+            margin-bottom: 15px;
+        }
+
+        .icon-container p {
+            color: #2c5234;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 8px 20px;
+            border-radius: 20px;
+            background-color: #e8f5e9;
+            transition: background-color 0.3s ease;
+        }
+
+        .icon-container:hover p {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 600px;
+            height: auto;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            margin: 5% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        #reader {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .scan-result {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="profile-container" id="profile-icon" onclick="toggleDropdown()">
+            <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Profile Logo" />
+            <h1 style="font-size: 22px; font-weight: 500; font-family: 'Poppins', sans-serif; text-transform: capitalize;">Welcome, {{ username }}!</h1>
+        </div>
+        <div class="profile-dropdown" id="profile-dropdown">
+            <a href="{{ url_for('logout') }}">Logout</a>
+            <a href="{{ url_for('profile') }}">Profile</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h1 class="main-title">Hey Eco-Worriers!</h1>
+            <div class="subtitle" style="position: relative; left: 150px;">Ready to be a change-makers?</div>
+        </div>
+
+
+        <div class="section">
+            <div class="icons-container">
+                <div class="icon-container" onclick="openQRScanner()">
+                    <div class="icon">
+                        <i class="bx bx-qr-scan"></i>
+                    </div>
+                    <p>Scan & Earn</p>
+                </div>
+                
+
+                <div class="icon-container" onclick="window.location.href='{{ url_for('shop_now') }}'">
+                    <div class="icon">
+                        <i class="bx bxs-shopping-bags"></i>
+                    </div>
+                    <p>Shop Smart</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Scanner Modal -->
+    <div id="qrModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeQRScanner()">&times;</span>
+            <h2>Scan QR Code</h2>
+            <div id="reader"></div>
+            <div id="scanResult"></div>
+        </div>
+    </div>
+
+    <script>
+        let html5QrcodeScanner = null;
+
+        function toggleDropdown() {
+            var dropdown = document.getElementById("profile-dropdown");
+            var currentDisplay = dropdown.style.display;
+            dropdown.style.display = currentDisplay === "block" ? "none" : "block";
+        }
+
+        window.onclick = function (event) {
+            var dropdown = document.getElementById("profile-dropdown");
+            var profileIcon = document.getElementById("profile-icon");
+            if (
+                !profileIcon.contains(event.target) &&
+                !dropdown.contains(event.target)
+            ) {
+                dropdown.style.display = "none";
+            }
+        };
+
+        function openQRScanner() {
+            document.getElementById("qrModal").style.display = "block";
+            initScanner();
+        }
+
+        function closeQRScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear();
+            }
+            document.getElementById("qrModal").style.display = "none";
+            document.getElementById("scanResult").innerHTML = "";
+        }
+
+        function initScanner() {
+            html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+                fps: 10,
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1,
+            });
+            html5QrcodeScanner.render(onScanSuccess, onScanError);
+        }
+
+        function onScanSuccess(decodedText) {
+            try {
+                const url = new URL(decodedText);
+                const resultDiv = document.getElementById("scanResult");
+                resultDiv.innerHTML =
+                    '<div class="scan-result success">QR Code detected! Redirecting...</div>';
+
+                setTimeout(() => {
+                    window.open(url, "_blank");
+                    closeQRScanner();
+                }, 1500);
+            } catch (e) {
+                document.getElementById("scanResult").innerHTML =
+                    '<div class="scan-result error">Invalid URL in QR code</div>';
+            }
+        }
+
+        function onScanError(error) {
+            console.warn(`QR error: ${error}`);
+        }
+    </script>
+</body>
+
+</html>

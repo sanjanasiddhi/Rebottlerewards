@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script>
+    setTimeout(function () {
+        const messages = document.querySelectorAll(".flash-message");
+        messages.forEach(function (message) {
+        message.style.display = "none";
+        });
+      }, 3000); // Hides flash messages after 3 seconds
+    </script>
+</head>
+<body>
+    <div class="container">
+    <img
+        src="{{ url_for('static', filename='logo.png') }}"
+        alt="Logo"
+        class="logo"
+    />
+    <h2>Signup</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div id="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
+    <!-- Signup Form -->    
+    <form method="POST">
+        <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        required
+        /><br />
+        <input type="email" name="email" placeholder="Email" required /><br />
+        <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+        /><br />
+        <input
+        type="password"
+        name="confirm_password"
+        placeholder="Confirm Password"
+        required
+        /><br />
+        <select name="security_question" required>
+        <option value="">Select Security Question</option>
+        <option value="What is your pet's name?">
+            What is your pet's name?
+        </option>
+        <option value="What is your mother's maiden name?">
+            What is your mother's maiden name?
+        </option></select
+        ><br />
+        <input
+        type="text"
+        name="security_answer"
+        placeholder="Security Answer"
+        required
+        /><br />
+        <button type="submit">Signup</button>
+    </form>
+    <a href="{{ url_for('login') }}">Back to Login</a>
+    </div>
+</body>
+</html>

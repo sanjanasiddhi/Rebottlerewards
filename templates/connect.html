@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Centered Connect Button</title>
+    <style>
+      /* Full-page container to center the button */
+    body,
+    html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+    }
+
+      /* Button styling */
+    .connect-button {
+        padding: 15px 30px;
+        font-size: 18px;
+        color: white;
+        background-color: #59855C;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+      /* Button hover effect */
+    .connect-button:hover {
+        background-color: #448348;
+    }
+    </style>
+    <script>
+    function checkLoginStatus() {
+        fetch("/check_login")
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.logged_in) {
+              window.location.href = "/newpage"; // Redirect to new page
+            } else {
+            alert("Please log in first to access this page!");
+              window.location.href = "/login"; // Redirect to login page
+            }
+        });
+    }
+    </script>
+    </head>
+    <body>
+    <!-- Connect button with JavaScript onclick event -->
+    <button class="connect-button" onclick="checkLoginStatus()">Connect</button>
+</body>
+</html>

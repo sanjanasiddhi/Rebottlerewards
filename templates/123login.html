@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script>
+    setTimeout(function () {
+        const messages = document.querySelectorAll(".flash-message");
+        messages.forEach(function (message) {
+        message.style.display = "none";
+        });
+      }, 3000); // 3000 milliseconds = 3 seconds
+    </script>
+</head>
+<body>
+    <div class="container">
+    <img
+        src="{{ url_for('static', filename='logo.png') }}"
+        alt="Logo"
+        class="logo"
+    />
+    <h2>Login</h2>
+    <form method="POST" action="{{ url_for('login') }}">
+        <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        required
+        aria-label="Enter your username"
+        /><br />
+        <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+        aria-label="Enter your password"
+        /><br />
+        <button type="submit">Login</button>
+    </form>
+    <a href="{{ url_for('signup') }}">Signup</a> |
+    <a href="{{ url_for('forgot_password') }}">Forgot Password?</a>
+
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <ul>
+        {% for category, message in messages %}
+        <li class="flash-message {{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
+    </div>
+</body>
+</html>

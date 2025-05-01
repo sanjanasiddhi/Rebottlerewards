@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pompiere&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReBottle Rewards</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            list_products(); // ✅ Fetch products when page loads
+        });
+
+        window.onload = function () {
+            const clearFilterButton = document.getElementById('clear_filter');
+            if (clearFilterButton) {
+                clearFilterButton.click();  // ✅ Simulate button click
+            }
+        };
+
+
+    </script>
+    <header>
+        <div class="logo"><img src="{{ url_for('static', filename='logo.png') }}" width="140px"></div>
+        <div class="points" style="font-family: 'Post No Bills Colombo ExtraBold';color: #59855C; font-size: 46px;" ;>
+            Your Bottle, Your Rewards, Our Future....</div>
+        <div style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+            <img src="{{ url_for('static', filename='rupee.png') }}" width="49px">
+            <div class="points" style="color: #59855C; font-weight: 400;">Total Points: <span id="userPoints">{{ points
+                    }}</span></div>
+            <button class="cart-btn" style="padding-left: 10px;" onclick="toggleCart()">🛒 Cart (<span
+                    id="cartCount">0</span>)</button>
+        </div>
+    </header>
+
+    <div class="banner">
+        <h1 style="font-family: 'Pompiere', serif;
+        font-weight: 300;
+        font-size: 60px;
+        font-style: normal;">GO GREEN EARN REWARDS - MAKE RECYCLING A LIFESTYLE</h1>
+    </div>
+
+    <div class="shop">
+        <!-- Sidebar Filters -->
+        <aside class="filters glassmorphism">
+            <div class="just_side">
+                <h3>Filter </h3>
+                <button class="clear-btn" id="clear_filter" onclick="clearFilters()">Clear All</button>
+            </div>
+            <div class="category">
+                <h4 style="font-family: 'Poppins', sans-serif; color: #646464; font-weight: 400; font-size: 22px;">
+                    Product Category</h4>
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="category" class="category-filter" value="Eco-Friendly Home Products"
+                        checked onchange="applyFilters()">
+                    <span class="checkmark"></span>
+                    Eco-Friendly Home
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="category" class="category-filter" value="Recycled Stationary" checked
+                        onchange="applyFilters()">
+                    <span class="checkmark"></span>
+                    Recycled Stationary
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="category" class="category-filter" value="Garbage Bags" checked
+                        onchange="applyFilters()">
+                    <span class="checkmark"></span>
+                    Garbage Bags
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="category" class="category-filter" value="Kitchen Utilities" checked
+                        onchange="applyFilters()">
+                    <span class="checkmark"></span>
+                    Kitchen Utilities
+                </label>
+
+            </div>
+
+            <div class="category">
+                <h4 style="font-family: 'Poppins', sans-serif; color: #646464; font-weight: 400; font-size: 22px;">Price
+                    Range</h4>
+                <label style="font-size: 18px; font-weight: 400;"><input type="radio" name="priceRange" value="under500"
+                        onchange="applyFilters()"> ₹0 - ₹500</label>
+                <label style="font-size: 18px; font-weight: 400;"><input type="radio" name="priceRange"
+                        value="500to1500" onchange="applyFilters()"> ₹500 - ₹1500</label>
+                <label style="font-size: 18px; font-weight: 400;"><input type="radio" name="priceRange"
+                        value="1500to2000" onchange="applyFilters()"> ₹1500 - ₹2000</label>
+                <label style="font-size: 18px; font-weight: 400;"><input type="radio" name="priceRange" value="over2000"
+                        onchange="applyFilters()"> ₹2000+</label>
+
+            </div>
+            <div class="category">
+                <h4 style="font-family: 'Poppins', sans-serif; color: #646464; font-weight: 400; font-size: 22px;">
+                    Seller</h4>
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="seller" class="category-filter1" value="Amazon" checked
+                        onchange="applyFilters()">
+                    <span class="checkmark"></span>
+                    Amazon
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="seller" class="category-filter1" value="Jiomart" checked
+                        onchange="applyFilters()">
+                    <span class="checkmark"></span>
+                    JioMart
+                </label>
+
+            </div>
+        </aside>
+
+
+
+        <!-- Product List -->
+        <main class="products">
+            <input type="text" id="searchBox" style="font-size:20px; color: #59855C;" class="fa"
+                placeholder="&#xf002;   Search for eco-products..." oninput="applyFilters()">
+
+            <div class="product-list" id="productList">
+                <!-- Products will be generated dynamically here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <h2>🛒 Your Cart</h2>
+        <button onclick="clearCart()" id="click_clear" class="clear-cart-btn">🗑 Clear Cart</button>
+        <ul id="cartItems"></ul>
+
+        <input type="tel"
+            style="width: 100%; height: 40px; border-radius: 8px; border: #5c5c5c solid 1px; padding-left: 5px; font-family: 'Poppins', sans-serif; outline: none; font-weight: 500;"
+            id="redeemPoints" placeholder="Enter points to redeem">
+        <button onclick="redeem_points()" style="margin-top:10px ; font-weight: 500; width: 100%;">Radeem
+            Points</button>
+        <p>Discount Applied: ₹<span id="discountAmount">0</span></p>
+        <p style="font-size: 22px; font-weight: 500;">Total: ₹<span id="totalPrice"></span></p>
+        <button class="checkout-btn" onclick="checkout()" style="font-weight: 400;">Proceed to Payment</button>
+        <button class="close-btn" onclick="toggleCart()">Close</button>
+    </div>
+
+    <footer style="height: auto;">
+        <p style="color: #59855C; font-size: 20px; font-weight: 400;">Reach us: +91 7676566074</p>
+        <p style="color: #59855C; font-size: 20px; font-weight: 400;">Mail us:Rebottlerewards@gmail.com</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+<style>
+    /* General Reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        background: #f7f9fc;
+    }
+
+    /* Header */
+    header {
+        display: flex;
+        justify-content: space-between;
+        padding-left: 2px 4px;
+        background: #EFFFDB;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    /* Banner */
+    .banner {
+        text-align: center;
+        background: #59855C;
+        padding: 15px;
+        color: white;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    /* Layout */
+    .shop {
+        display: flex;
+        margin-top: 20px;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    /* Sidebar Filters */
+    .filters {
+        width: 22%;
+        padding: 20px;
+        border-radius: 12px;
+
+    }
+
+    .just_side {
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .glassmorphism {
+        background-color: #F4FFED;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 15px;
+        border-radius: 15px;
+    }
+
+    h3,
+    h4 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        cursor: pointer;
+    }
+
+    /* Clear Filters Button */
+    .clear-btn {
+        background: #D2FFB4;
+        color: #59855C;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 100px;
+        cursor: pointer;
+        margin-bottom: 15px;
+        font-family: "Poppins", serif;
+        font-weight: 500;
+        font-style: normal;
+
+    }
+
+    .clear-btn:hover {
+        background: #b2ff7e;
+    }
+
+    /* Products */
+    .products {
+        flex: 1;
+    }
+
+    #searchBox {
+        width: 100%;
+        padding: 12px;
+        border-radius: 50px;
+        border: 1px solid #59855C;
+        font-size: 16px;
+        height: 60px;
+        color: #59855C;
+    }
+
+    /* Product Grid */
+    .product-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .product-card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        width: 242px;
+        text-align: left;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .product-card:hover {
+        transform: scale(1.05);
+
+    }
+
+    .product-image {
+    background: #c8e6c9;
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+.product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+    /* Buttons */
+    button {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background: #388e3c;
+    }
+
+    /* Footer */
+    footer {
+        margin-top: 20px;
+        background: #EFFFDB;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        font-size: 16px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* General Reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        background: #f7f9fc;
+    }
+
+    .category {
+        padding-top: 20px;
+    }
+
+    /* Header */
+    header {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 20px;
+        background: #EFFFDB;
+        color: white;
+        align-items: center;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .cart-btn {
+        background: #59855C;
+        color: white;
+        height: 50px;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        border-radius: 6px;
+    }
+
+    .cart-btn:hover {
+        background: #296e2d;
+    }
+
+    /* Sidebar Cart */
+    .cart-sidebar {
+        position: fixed;
+        top: 0;
+        right: -350px;
+        width: 320px;
+        height: 100%;
+        background: #f9f9f9;
+        box-shadow: -4px 0px 15px rgba(0, 0, 0, 0.3);
+        padding: 28px;
+        transition: 0.4s ease-in-out;
+        overflow-y: auto;
+        border-radius: 12px 0 0 12px;
+    }
+
+    .cart-sidebar h2 {
+        font-size: 24px;
+        margin-bottom: 18px;
+        color: #333;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .cart-sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+    }
+
+    .cart-sidebar li {
+        display: flex;
+        justify-content: space-between;
+        padding: 14px;
+        background: #fff;
+        border-radius: 10px;
+        margin: 12px 0;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .clear-cart-btn {
+        width: 100%;
+        padding: 12px;
+        background: #ff9800;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .clear-cart-btn:hover {
+        background: #e68900;
+    }
+
+    .checkout-btn {
+        width: 100%;
+        padding: 14px;
+        background: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 10px;
+        margin-top: 18px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .checkout-btn:hover {
+        background: #388e3c;
+    }
+
+    .close-btn {
+        background: #ff5252;
+        color: white;
+        padding: 14px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 12px;
+    }
+
+    .close-btn:hover {
+        background: #d32f2f;
+    }
+
+    /* Coupon Code Styling */
+    #couponCode {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-top: 18px;
+        font-size: 16px;
+    }
+
+    #couponCode:focus {
+        border-color: #4caf50;
+        outline: none;
+    }
+
+    button {
+        transition: 0.3s;
+    }
+
+    /* Discount Applied */
+    #discountAmount {
+        font-size: 18px;
+        font-weight: bold;
+        color: #388e3c;
+    }
+
+    p {
+        font-size: 16px;
+        margin-top: 12px;
+        color: #444;
+        text-align: center;
+    }
+
+
+    /* Open Cart */
+    .cart-sidebar.open {
+        right: 0;
+    }
+
+    .custom-checkbox {
+        display: block;
+        position: relative;
+        cursor: pointer;
+        font-size: 18px;
+        user-select: none;
+    }
+
+    .custom-checkbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    .custom-checkbox {
+        display: block;
+        position: relative;
+        padding-left: 30px;
+        cursor: pointer;
+        font-size: 18px;
+        user-select: none;
+    }
+
+    .custom-checkbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    /* Default unchecked box */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        background-color: #e0eddc;
+        /* Light greenish background */
+        border-radius: 4px;
+        border: 2px solid #4f7c54;
+        /* Dark green border */
+    }
+
+    /* On hover */
+    .custom-checkbox:hover input~.checkmark {
+        background-color: #d4e8ca;
+    }
+
+    /* When checkbox is checked */
+    .custom-checkbox input:checked~.checkmark {
+        background-color: #4f7c54;
+        /* Dark green */
+    }
+
+    /* Checkmark (tick) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    .custom-checkbox input:checked~.checkmark:after {
+        display: block;
+    }
+
+    /* Style the tick */
+    .custom-checkbox .checkmark:after {
+        left: 5px;
+        top: 2px;
+        width: 4px;
+        height: 8px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        transform: rotate(45deg);
+    }
+
+    @font-face {
+        font-family: "Post No Bills Colombo ExtraBold";
+        src: url("https://db.onlinewebfonts.com/t/aac28a8d3a17309e7f5bd19aadcd7915.eot");
+        src: url("https://db.onlinewebfonts.com/t/aac28a8d3a17309e7f5bd19aadcd7915.eot?#iefix")format("embedded-opentype"),
+            url("https://db.onlinewebfonts.com/t/aac28a8d3a17309e7f5bd19aadcd7915.woff2")format("woff2"),
+            url("https://db.onlinewebfonts.com/t/aac28a8d3a17309e7f5bd19aadcd7915.woff")format("woff"),
+            url("https://db.onlinewebfonts.com/t/aac28a8d3a17309e7f5bd19aadcd7915.ttf")format("truetype"),
+            url("https://db.onlinewebfonts.com/t/aac28a8d3a17309e7f5bd19aadcd7915.svg#Post No Bills Colombo ExtraBold")format("svg");
+    }
+
+    input[type="radio"] {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #5c8050;
+        /* Greenish border */
+        border-radius: 50%;
+        outline: none;
+        cursor: pointer;
+        background-color: transparent;
+        align-self: center;
+    }
+
+    input[type="radio"]:checked {
+        background-color: #5c8050;
+        /* Greenish fill when selected */
+    }
+</style>
+<script>
+
+    // const products = [
+    //     { name: 'Bamboo Charcoal Toothbrush', price: 150, category: 'Eco-Friendly Home Products', seller: 'Amazon' },
+    //     { name: 'Recycled Notebook', price: 120, category: 'Recycled Stationary', seller:'Amazon' },
+    //     { name: 'Biodegradable Garbage Bags', price: 300, category: 'Garbage Bags' , seller:'Jiomart'},
+    //     { name: 'Biodegradable Garbage Bags', price: 300, category: 'Garbage Bags' , seller:'Jiomart'},
+    //     { name: 'Reusable Kitchen Wrap', price: 800, category: 'Kitchen Utilities' , seller:'Jiomart'}
+    // ];
+
+
+    let cart = [];
+    const productList = document.getElementById('productList');
+    const cartSidebar = document.getElementById('cartSidebar');
+    const cartItems = document.getElementById('cartItems');
+    const totalPriceElement = document.getElementById('totalPrice');
+    const cartCountElement = document.getElementById('cartCount');
+    const discountAmountElement = document.getElementById('discountAmount');
+
+
+    function displayProducts(products) {
+        const productList = document.getElementById('productList');
+        productList.innerHTML = ''; // ✅ Clear previous products
+
+        if (!products || products.length === 0) {
+            productList.innerHTML = "<p>No products available.</p>";
+            return;
+        }
+
+        console.log("Displaying products:", products); // ✅ Debugging log
+
+        products.forEach((product, index) => {
+            if (!product.name || !product.price || !product.seller) {
+                console.warn("Skipping invalid product:", product);
+                return;
+            }
+
+            const productCard = document.createElement('div');
+            productCard.classList.add('product-card');
+
+            // Ensure price is properly formatted
+            const price = parseFloat(product.price).toFixed(2);
+
+            productCard.innerHTML = `
+           <div class="product-image"><img src="${product.image}" alt="${product.name}"></div>
+            <h3 style="font-family: 'Poppins', sans-serif; font-size: 22px; font-weight:500; color:#59855C;">${product.name}</h3>
+            <h6 style="font-family: 'Poppins', sans-serif; font-size: 14px; font-weight:400; color:#59855C;">Seller : ${product.seller}</h6>
+            <p style="font-family: 'Poppins', sans-serif; font-size: 36px; font-weight:600; color:#59855C;">₹${product.price}</p>
+            <button style="background-color: #59855C; width:100%; border-radius:50px; font-size:20px; font-weight:400;"onclick="addToCart(${index})">Add to cart</button>
+        `;
+            productList.appendChild(productCard);
+        });
+    }
+
+
+
+
+
+    // Function to Clear All Filters
+    function clearFilters() {
+        // Uncheck all checkboxes
+        document.querySelectorAll(".category-filter").forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        document.querySelectorAll(".category-filter1").forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
+        document.querySelectorAll('input[name="priceRange"]').forEach(radio => {
+            radio.checked = false;
+        });
+
+
+        // Clear the search input
+        document.getElementById("searchBox").value = "";
+
+        // Apply filters again to reset the product list
+        applyFilters();
+    }
+
+
+    function addToCart(index) {
+    if (!currentProducts || currentProducts.length === 0) {
+        console.warn("No products available to add to cart.");
+        return;
+    }
+
+    if (index < 0 || index >= currentProducts.length) {
+        console.warn("Invalid product index:", index);
+        return;
+    }
+
+    cart.push(currentProducts[index]); // Use `currentProducts` instead of `products`
+    updateCart();
+}
+
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCart();
+    }
+
+    function updateCart() {
+        cartItems.innerHTML = '';
+        let total = 0;
+
+        cart.forEach((item, index) => {
+            total += parseFloat(item.price); // Ensure price is treated as a number
+            const li = document.createElement('li');
+            li.innerHTML = `${item.name} <b>₹${item.price}</b>
+            <div class="remove-btn" onclick="removeFromCart(${index})" style="cursor: pointer;"><i style="font-size:22px; padding-left:4px;" class="fa">&#xf00d;</i></div>`;
+            cartItems.appendChild(li);
+        });
+
+        totalPriceElement.innerText = `${parseFloat(total).toFixed(2)}`;
+        cartCountElement.innerText = cart.length;
+
+
+    }
+
+    function clearCart() {
+        if (confirm("Are you sure you want to clear the cart?")) {
+            cart = [];
+            discountApplied = false;
+            discountAmountElement.innerText = "0";
+            updateCart();
+        }
+    }
+
+    function toggleCart() {
+        cartSidebar.classList.toggle('open');
+    }
+
+
+
+
+    async function redeem_points() {
+        let pointsToRedeem = parseInt(document.getElementById('redeemPoints').value);
+
+        if (isNaN(pointsToRedeem) || pointsToRedeem <= 0) {
+            alert("Enter a valid number of points.");
+            return;
+        }
+
+        try {
+            let response = await fetch('/redeem_points', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ points_to_redeem: pointsToRedeem }) // No need to send user_id
+            });
+
+            let result = await response.json();
+
+            if (result.success) {
+                alert(result.message);
+                document.getElementById('discountAmount').innerText = result.discount;
+                document.getElementById('totalPrice').innerText = Math.max(0, parseInt(document.getElementById('totalPrice').innerText) - result.discount);
+                document.getElementById('userPoints').innerText = result.remaining_points;
+                document.getElementById('redeemPoints').value = '';
+            } else {
+                console.warn("Redeem Error:", result.error);
+                alert(result.error);
+            }
+        } catch (error) {
+            console.error('Error redeeming points:', error);
+            alert('An error occurred.');
+        }
+    }
+
+
+    function checkout() {
+        // Get the current total price from the cart
+        let totalPrice = parseFloat(document.getElementById("totalPrice").innerText);
+
+        if (totalPrice <= 0) {
+            alert("Cart is empty! Please add items before proceeding to payment.");
+            return;
+        }
+
+        var options = {
+            key: "rzp_test_PKj7Tx2U0uaaLh", // Replace with your API Key
+            amount: totalPrice * 100, // Convert to paise
+            currency: "INR",
+            name: "ReBottle Rewards-",
+            description: "Test Transaction",
+            image: "https://yourwebsite.com/logo.png",
+            handler: function (response) {
+                alert("✅ Payment Successful! \nPayment ID: " + response.razorpay_payment_id);
+            },
+            prefill: {
+                name: "John Doe",
+                email: "johndoe@example.com",
+                contact: "9876543210"
+            },
+            theme: {
+                color: "#ff9800"
+            }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.open();
+    }
+
+
+
+</script>
+
+<script>
+    // Store products in a more reliable way
+    let currentProducts = [];
+
+    // Initial product load
+    async function listProducts() {
+        try {
+            const response = await fetch('/list_products', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (!Array.isArray(data)) {
+                throw new Error("Invalid data format received");
+            }
+
+            // Store the products globally
+            currentProducts = data;
+
+            // Initially display all products
+            displayProducts(currentProducts);
+        } catch (error) {
+            console.error("Error fetching products:", error);
+            showError("Failed to load products. Please try again later.");
+        }
+    }
+
+    // Enhanced price range checker
+    function checkPriceRange(price, range) {
+        const numPrice = parseFloat(price);
+        switch (range) {
+            case 'under500':
+                return numPrice < 500;
+            case '500to1500':
+                return numPrice >= 500 && numPrice <= 1500;
+            case '1500to2000':
+                return numPrice >= 1500 && numPrice <= 2000
+            case 'over2000':
+                return numPrice > 2000;
+            default:
+                return true;
+        }
+    }
+
+    // Enhanced filter function
+    function applyFilters() {
+        if (!currentProducts.length) {
+            console.warn('No products available to filter');
+            return;
+        }
+
+        // Get filter values
+        const searchText = document.getElementById('searchBox')?.value?.toLowerCase().trim() || '';
+        const selectedPriceRange = document.querySelector('input[name="priceRange"]:checked')?.value || '';
+        const selectedSellers = Array.from(document.querySelectorAll('.category-filter1:checked')).map(input => input.value);
+        const selectedCategories = Array.from(document.querySelectorAll('.category-filter:checked')).map(input => input.value);
+
+        // Log filter criteria for debugging
+        console.log('Filter Criteria:', {
+            searchText,
+            selectedPriceRange,
+            selectedSellers,
+            selectedCategories
+        });
+
+        const filteredProducts = currentProducts.filter(product => {
+            // Null check for product
+            if (!product) return false;
+
+            // Category filter
+            const categoryMatch = selectedCategories.length === 0 ||
+                selectedCategories.includes(product.category);
+
+            // Seller filter
+            const sellerMatch = selectedSellers.length === 0 ||
+                selectedSellers.includes(product.seller);
+
+            // Price range filter
+            const priceMatch = !selectedPriceRange ||
+                checkPriceRange(product.price, selectedPriceRange);
+
+            // Search text filter
+            const nameMatch = !searchText ||
+                product.name.toLowerCase().includes(searchText);
+
+            // Debug log for filter matches
+            if (!categoryMatch || !sellerMatch || !priceMatch || !nameMatch) {
+                console.debug('Product filtered out:', {
+                    product,
+                    categoryMatch,
+                    sellerMatch,
+                    priceMatch,
+                    nameMatch
+                });
+            }
+
+            return categoryMatch && sellerMatch && priceMatch && nameMatch;
+        });
+
+        // Log filtered results
+        console.log(`Filtered products: ${filteredProducts.length} of ${currentProducts.length}`);
+
+        // Display filtered products
+        displayProducts(filteredProducts);
+    }
+
+    // Add event listeners for filter changes
+    function initializeFilters() {
+        // Price range filters
+        document.querySelectorAll('input[name="priceRange"]').forEach(input => {
+            input.addEventListener('change', applyFilters);
+        });
+
+        // Category filters
+        document.querySelectorAll('.category-filter').forEach(input => {
+            input.addEventListener('change', applyFilters);
+        });
+
+        // Seller filters
+        document.querySelectorAll('.category-filter1').forEach(input => {
+            input.addEventListener('change', applyFilters);
+        });
+
+        // Search box
+        const searchBox = document.getElementById('searchBox');
+        if (searchBox) {
+            // Debounce the search to prevent too many filters
+            let timeout;
+            searchBox.addEventListener('input', () => {
+                clearTimeout(timeout);
+                timeout = setTimeout(applyFilters, 300);
+            });
+        }
+    }
+
+    // Call this when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        listProducts();
+        initializeFilters();
+    });
+</script>

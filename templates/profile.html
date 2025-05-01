@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReBottle Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #e6f5c8, #ffffff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .profile-container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #8ca982;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 34px;
+            color: #37472f;
+            margin-top: 10px;
+        }
+
+        label {
+            font-size: 18px;
+            font-weight: bold;
+            color: #37472f;
+            display: block;
+            margin-top: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #8ca982;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            background: #8ca982;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #6b8c60;
+        }
+
+        .edit-btn {
+            background: #ff9800;
+        }
+
+        .edit-btn:hover {
+            background: #e68900;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="logo.png" alt="Profile Picture" class="profile-pic">
+        <h1>John Doe</h1>
+
+        <div class="profile-container">
+            <label for="green-id">Green ID</label>
+            <input type="text" id="green-id" value="{{ username }}" disabled>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" value="{{ email }}" disabled>
+
+            <label for="address">Address</label>
+            <input type="text" id="address" value="{{ address }}" disabled>
+
+        </div>
+
+        <div class="buttons">
+            <button class="btn edit-btn" onclick="enableEdit()">Edit</button>
+            <button class="btn" onclick="update_profile()">Save</button>
+            <a href="{{ url_for('shop_now') }}">
+                <button class="btn" style="background-color: red; text-decoration:none;">Close</button></a>
+        </div>
+    </div>
+
+    <script>
+        function enableEdit() {
+            document.getElementById('green-id').removeAttribute('disabled');
+            document.getElementById('email').removeAttribute('disabled');
+            document.getElementById('address').removeAttribute('disabled');
+        }
+
+
+        async function update_profile() {
+            let newname = document.getElementById('green-id').value;
+            let newemail = document.getElementById('email').value;
+            let newaddress = document.getElementById('address').value;
+
+            try {
+                let response = await fetch('/update_profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ new_name: newname, new_email: newemail, new_address: newaddress })
+                });
+
+                let result = await response.json(); // Parse JSON response
+
+                if (result.success) {
+                    alert(result.message);
+                } else {
+                    alert("Error: " + result.error);
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('An error occurred.');
+            }
+        }
+
+    </script>
+</body>
+
+</html>

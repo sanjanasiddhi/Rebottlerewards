@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        setTimeout(function () {
+            const messages = document.querySelectorAll(".flash-message");
+            messages.forEach(function (message) {
+            message.style.display = "none";
+            });
+          }, 3000); // Hides flash messages after 3 seconds
+        </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReBottle Rewards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #e6f5c8, #ffffff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+        }
+
+        .form-container {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .logo-container {
+            flex: 1;
+            text-align: center;
+        }
+
+        .logo-container img {
+            width: 450px;
+            height: auto;
+            margin-left:10px ;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 34px;
+            color: #37472f;
+        }
+
+        p.tagline {
+            font-size: 14px;
+            color: #37472f;
+            font-weight: 400;
+            margin-top: -10px;
+        }
+
+        label {
+            font-size: 20px;
+            font-weight: bold;
+            color: #37472f;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #8ca982;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        select {
+            width: 105%;
+            padding: 10px;
+            border: 1px solid #8ca982;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            background: #8ca982;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #6b8c60;
+        }
+
+        .forgot-password {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #37472f;
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .flash-message {
+    display: block;
+    animation: fadeOut 3s ease-out forwards;
+}
+
+.flash-message {
+    display: block;
+    padding: 10px;
+    margin: 10px 0;
+    text-align: center;
+    flex-direction: column;
+    flex: 0 0 auto;
+    border-radius: 5px;
+    position: absolute;
+    align-items: center;
+    top: 20px;
+    justify-content: center;
+
+}
+
+.flash-message.success {
+    background-color: #4caf50;
+    color: white;
+}
+
+.flash-message.danger {
+    background-color: #f44336;
+    color: white;
+}
+
+.flash-message.warning {
+    background-color: #ff9800;
+    color: white;
+}
+
+.flash-message.info {
+    background-color: #2196f3;
+    color: white;
+}
+
+@keyframes fadeOut {
+    0% {
+    opacity: 1;
+    }
+    100% {
+    opacity: 0;
+    display: none;
+    }
+}
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %}
+        <div id="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+
+    <div class="container">
+        
+        <div class="form-container">
+            <form method="POST">
+            <label for="green-id">Username</label>
+            <input type="text" id="green-id" name="username" placeholder="Enter your Username">
+            
+            <label for="green-id">Email</label>
+            <input type="text" id="green-id" name="email" placeholder="Enter your Email">
+
+            <label for="green-id">Select Security Question</label>
+            <select type="text" id="green-id" name="security_question" placeholder="Select Security Question">
+                <option value="">Select Security Question</option>
+                <option value="What is your pet's name?">
+                    What is your pet's name?
+                </option>
+                <option value="What is your mother's maiden name?">
+                    What is your mother's maiden name?
+                </option>
+                </select>
+                <label for="green-id">Security Answer</label>
+                <input type="text" id="green-id" name="security_answer" placeholder="Security Answer">
+
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your Password">
+
+            <label for="password">Confirm Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Enter your Confirm Password">
+
+
+            <div class="buttons" style="width: 106%;">
+                <button class="btn" type="submit"> Sign Up</button>
+            </div>
+</form>
+            
+            <a href="{{ url_for('login') }}" class="forgot-password">Already have an account?</a>
+        </div>
+
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='bottle.png') }}" alt="Recycle Logo">
+        </div>
+
+</body>
+</html>
